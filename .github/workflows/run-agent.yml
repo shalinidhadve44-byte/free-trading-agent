@@ -13,6 +13,7 @@ jobs:
   research:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     steps:
       - name: Get agent code
         uses: actions/checkout@v4
@@ -23,4 +24,13 @@ jobs:
           python-version: "3.12"
 
       - name: Run market research
-        run: python agent.py
+        run: |
+          mkdir -p reports
+          python agent.py | tee reports/latest-report.json
+
+      - name: Save downloadable report
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-research-report
+          path: reports/latest-report.json
+          retention-days: 7
